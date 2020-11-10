@@ -1,0 +1,6 @@
+yapf
+mypy
+django
+djangorestframework
+pylama
+https://github.com/httpie/httpie/archive/master.tar.gz
