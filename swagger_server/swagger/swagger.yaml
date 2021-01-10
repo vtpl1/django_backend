@@ -1,0 +1,3493 @@
+openapi: 3.0.0
+info:
+  title: Engine api
+  description: Engine APIs
+  version: 1.0.6
+servers:
+- url: http://v2.videonetics.com:5000
+  description: Production API
+- url: https://virtserver.swaggerhub.com/videonetics/engines/1.0.1
+  description: SwaggerHub API Auto Mocking
+paths:
+  /engines:
+    get:
+      tags:
+      - engines
+      summary: Get all engine details
+      description: Get all engine details
+      operationId: engines_get
+      parameters:
+      - name: page
+        in: query
+        description: |-
+          The page clause takes a the page number you want to query. Example:
+            * To find registered faces at page no 4, use /engines?page=4
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+        example: page=4
+      - name: where
+        in: query
+        description: |-
+          The where clause takes a JSON as a string with one or many properties of the registeredFace model. Example:
+            * To find enginess with capabilities 206, 211 , use /engines?where={"capabilities":{"$in":[206,211]}}
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: string
+        example: '{"capabilities":{"$in":[206,211]}}'
+      - name: maxResults
+        in: query
+        description: |-
+          The maxResults query parameter limits results equal to # of maxResults. Example:
+            * To get first registeredFace among all registeredFaces, use /engines?maxResults=1
+            * To limit registeredFaces to 5, use /engines?maxResults=5
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+        example: maxResults=5
+      responses:
+        "200":
+          description: Get all engines
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/enginesResponse'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+    post:
+      tags:
+      - engines
+      summary: Create an engine
+      description: Create an engine.
+      operationId: engines_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/engine'
+      responses:
+        "201":
+          description: Create an engine
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/defaultResponse'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+  /engines/{id}:
+    get:
+      tags:
+      - engines
+      summary: Get engine by id
+      description: Get engine details for a given id
+      operationId: engines_id_get
+      parameters:
+      - name: id
+        in: path
+        description: Unique ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Get engine details for the given id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/engine'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+    delete:
+      tags:
+      - engines
+      summary: Delete an engine
+      description: Delete an engine
+      operationId: engines_id_delete
+      parameters:
+      - name: id
+        in: path
+        description: Unique ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          format: string
+        example: 5c20ae2c77d5330001aecf80
+      - name: If_Match
+        in: header
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          format: etag
+        example: 270f28924ab7c80e36d24eebae1a1abddaa20aea
+      responses:
+        "204":
+          description: No Content
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+  /engineTasks:
+    get:
+      tags:
+      - engines
+      summary: Get all engineTasks
+      description: Get all engineTasks details
+      operationId: engine_tasks_get
+      parameters:
+      - name: where
+        in: query
+        description: |-
+          The where clause takes a JSON as a string with one or many properties of the engineTask model. Example:
+            * To find engineTasks with capbilitiesType equal 211 and sourceId equal "4", use /engineTasks?where={"capbilitiesType":322,"source.sourceId":"4"}
+            * To find engineTasks with destination.extras.value equal "1553774721506487", use /engineTasks?where={"destination.extras.value":"1553774721506487"}
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: string
+        example: '{"destination.extras.value":"1553774721506487"}'
+      - name: page
+        in: query
+        description: |-
+          The page clause takes a the page number you want to query. Example:
+            * To find engine tasks at page no 4, use /engines?page=4
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+        example: page=4
+      - name: sort
+        in: query
+        description: |-
+          The sort query parameter sorts the result set in ascending and desending order by one of the property of the result set. Example:
+            * To sort engineTasks by created IN ASCEDING order, use /engineTasks?sort=created
+            * To sort engineTasks by created IN DECENDING order, use /engineTasks?sort=-created
+            * Please note the - (minus) sign in front of the created, that indicates inverse of ASCENDING
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: string
+        example: sort=-created
+      - name: maxResults
+        in: query
+        description: |-
+          The maxResults query parameter limits results equal to # of maxResults. Example:
+            * To get latest engineTask among whole engineTasks, use /engineTasks?maxResults=1
+            * To limit engineTasks to 2, use /engineTasks?maxResults=2
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+        example: maxResults=2
+      responses:
+        "200":
+          description: Get all engines
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/engineTasksResponse'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+    post:
+      tags:
+      - engines
+      summary: Create an engineTask
+      description: Create a engineTasks.
+      operationId: engine_tasks_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/engineTask'
+      responses:
+        "201":
+          description: Create engineTask
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/defaultResponse'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+  /engineTasks/{id}:
+    get:
+      tags:
+      - engines
+      summary: Get engine task by id
+      description: Get engine task for a given id
+      operationId: engine_tasks_id_get
+      parameters:
+      - name: id
+        in: path
+        description: Unique ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Get engine tasks for the given id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/engineTask'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+    delete:
+      tags:
+      - engines
+      summary: Delete an engine task
+      description: Delete an engine task
+      operationId: engine_tasks_id_delete
+      parameters:
+      - name: id
+        in: path
+        description: Unique ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          format: string
+        example: 5c20ae2c77d5330001aecf80
+      - name: If_Match
+        in: header
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          format: etag
+        example: 270f28924ab7c80e36d24eebae1a1abddaa20aea
+      responses:
+        "204":
+          description: No Content
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+    patch:
+      tags:
+      - engines
+      summary: Patch an engine task
+      description: 'Patch an engine task. Submit an object with one or more properties
+        of the engineTask model. ''Ex. {"capbilitiesType": [211, 206]} or {"capbilitiesType":
+        [211, 206], "source": {"sourceId":"", .....}}'''
+      operationId: engine_tasks_id_patch
+      parameters:
+      - name: id
+        in: path
+        description: Unique ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          format: string
+        example: 5c1956e925b6b30001103eb6
+      - name: If_Match
+        in: header
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          format: etag
+        example: 270f28924ab7c80e36d24eebae1a1abddaa20aea
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/engineTask'
+      responses:
+        "200":
+          description: Update enginetask by id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/defaultResponse'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+  /anprEvents:
+    get:
+      tags:
+      - engines
+      summary: Get all anprEvents
+      description: Get all anprEvents
+      operationId: anpr_events_get
+      parameters:
+      - name: where
+        in: query
+        description: |-
+          The where clause takes a JSON as a string with one or many properties of the anprEvent model. Example:
+            * To find anprEvents with engineTaskId equal 5c1956e925b6b30001103eaa, use /anprEvents?where={"eventDetails.engineTaskId":"5c1956e925b6b30001103eaa"}
+            * To find anprEvents with engineTaskId equal 5c1956e925b6b30001103eaa and sourceId equal 5c1956e925b6b30001103eab, use /anprEvents?where={"eventDetails.engineTaskId":"5c1956e925b6b30001103eaa","eventDetails.sourceId":"5c1956e925b6b30001103eab"}
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: string
+        example: '{"eventDetails.engineTaskId":"5c1956e925b6b30001103eaa","eventDetails.sourceId":"5c1956e925b6b30001103eab"}'
+      - name: sort
+        in: query
+        description: |-
+          The sort query parameter sorts the result set in ascending and desending order by one of the property of the result set. Example:
+            * To sort anprEvents by startTimeStamp in eventDetails IN ASCEDING order, use /anprEvents?sort=eventDetails.startTimeStamp
+            * To sort anprEvents by startTimeStamp in eventDetails IN DECENDING order, use /anprEvents?sort=-eventDetails.startTimeStamp
+            * Please note the - (minus) sign in front of the eventDetails.startTimeStamp, that indicates inverse of ASCENDING
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: string
+        example: sort=-eventDetails.startTimeStamp
+      - name: maxResults
+        in: query
+        description: |-
+          The maxResults query parameter limits results equal to # of maxResults. Example:
+            * To get latest anprEvent among whole anprEvents, use /anprEvents?maxResults=1
+            * To limit anprEvents to 5, use /anprEvents?maxResults=5
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+        example: maxResults=5
+      - name: embedded
+        in: query
+        description: |-
+          The embedded clause takes a JSON as a string with eventSnaps argument. Example:
+            * 'To find anprEvents with eventSnap object. use /anprEvents?embedded={"eventSnaps":1}'
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: string
+        example: '{"eventSnaps":1}'
+      responses:
+        "200":
+          description: Get all anprEvents
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/anprEventsResponse'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+    post:
+      tags:
+      - engines
+      summary: Create an anprEvent
+      description: Create an anprEvent.
+      operationId: anpr_events_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/anprEvent'
+      responses:
+        "201":
+          description: Create an anprEvent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/defaultResponse'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+  /anprEvents/{id}:
+    get:
+      tags:
+      - engines
+      summary: Get anprEvent by id
+      description: Get anprEvent by id
+      operationId: anpr_events_id_get
+      parameters:
+      - name: id
+        in: path
+        description: Unique ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: 5c1956e925b6b30001103eb6
+      - name: embedded
+        in: query
+        description: |-
+          The embedded clause takes a JSON as a string with eventSnaps argument. Example:
+            * 'To find anprEvents with eventSnap object. use /anprEvents/{id}?embedded={"eventSnaps":1}'
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: string
+        example: '{"eventSnaps":1}'
+      responses:
+        "200":
+          description: Get anprEvent by id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/anprEvent'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+  /vaEvents:
+    get:
+      tags:
+      - engines
+      summary: Get all vaEvents
+      description: Get all vaEvents
+      operationId: va_events_get
+      parameters:
+      - name: where
+        in: query
+        description: |-
+          The where clause takes a JSON as a string with one or many properties of the vaEvent model. Example:
+            * To find vaEvents with engineTaskId equal 5c1956e925b6b30001103eaa, use /vaEvents?where={"eventDetails.engineTaskId":"5c1956e925b6b30001103eaa"}
+            * To find vaEvents with engineTaskId equal 5c1956e925b6b30001103eaa and sourceId equal 5c1956e925b6b30001103eab, use /vaEvents?where={"eventDetails.engineTaskId":"5c1956e925b6b30001103eaa","eventDetails.sourceId":"5c1956e925b6b30001103eab"}
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: string
+        example: '{"eventDetails.engineTaskId":"5c1956e925b6b30001103eaa","eventDetails.sourceId":"5c1956e925b6b30001103eab"}'
+      - name: sort
+        in: query
+        description: |-
+          The sort query parameter sorts the result set in ascending and desending order by one of the property of the result set. Example:
+            * To sort vaEvents by startTimeStamp in eventDetails IN ASCEDING order, use /vaEvents?sort=eventDetails.startTimeStamp
+            * To sort vaEvents by startTimeStamp in eventDetails IN DECENDING order, use /vaEvents?sort=-eventDetails.startTimeStamp
+            * Please note the - (minus) sign in front of the eventDetails.startTimeStamp, that indicates inverse of ASCENDING
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: string
+        example: sort=-eventDetails.startTimeStamp
+      - name: maxResults
+        in: query
+        description: |-
+          The maxResults query parameter limits results equal to # of maxResults. Example:
+            * To get latest vaEvent among whole vaEvents, use /vaEvents?maxResults=1
+            * To limit vaEvents to 5, use /vaEvents?maxResults=5
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+        example: maxResults=5
+      - name: embedded
+        in: query
+        description: |-
+          The embedded clause takes a JSON as a string with eventSnaps argument. Example:
+            * 'To find vaEvents with eventSnap object. use /vaEvents?embedded={"eventSnaps":1}'
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: string
+        example: '{"eventSnaps":1}'
+      responses:
+        "200":
+          description: Get all vaEvents
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/vaEventsResponse'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+    post:
+      tags:
+      - engines
+      summary: Create an vaEvent
+      description: Create an vaEvent.
+      operationId: va_events_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/vaEvent'
+      responses:
+        "201":
+          description: Create an vaEvent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/defaultResponse'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+  /vaEvents/{id}:
+    get:
+      tags:
+      - engines
+      summary: Get vaEvent by id
+      description: Get vaEvent by id
+      operationId: va_events_id_get
+      parameters:
+      - name: id
+        in: path
+        description: Unique ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: 5c1956e925b6b30001103eb6
+      - name: embedded
+        in: query
+        description: |-
+          The embedded clause takes a JSON as a string with eventSnaps argument. Example:
+            * 'To find vaEvents with eventSnap object. use /vaEvents/{id}?embedded={"eventSnaps":1}'
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: string
+        example: '{"eventSnaps":1}'
+      responses:
+        "200":
+          description: Get vaEvent by id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/vaEvent'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+  /attributeEvents:
+    get:
+      tags:
+      - engines
+      summary: Get all attributeEvents
+      description: Get all attributeEvents
+      operationId: attribute_events_get
+      parameters:
+      - name: where
+        in: query
+        description: |-
+          The where clause takes a JSON as a string with one or many properties of the attributeEvent model. Example:
+            * To find attributeEvents with engineTaskId equal 5c1956e925b6b30001103eaa, use /attributeEvents?where={"eventDetails.engineTaskId":"5c1956e925b6b30001103eaa"}
+            * To find attributeEvents with engineTaskId equal 5c1956e925b6b30001103eaa and sourceId equal 5c1956e925b6b30001103eab, use /attributeEvents?where={"eventDetails.engineTaskId":"5c1956e925b6b30001103eaa","eventDetails.sourceId":"5c1956e925b6b30001103eab"}
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: string
+        example: '{"eventDetails.engineTaskId":"5c1956e925b6b30001103eaa","eventDetails.sourceId":"5c1956e925b6b30001103eab"}'
+      - name: sort
+        in: query
+        description: |-
+          The sort query parameter sorts the result set in ascending and desending order by one of the property of the result set. Example:
+            * To sort attributeEvents by startTimeStamp in eventDetails IN ASCEDING order, use /attributeEvents?sort=eventDetails.startTimeStamp
+            * To sort attributeEvents by startTimeStamp in eventDetails IN DECENDING order, use /attributeEvents?sort=-eventDetails.startTimeStamp
+            * Please note the - (minus) sign in front of the eventDetails.startTimeStamp, that indicates inverse of ASCENDING
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: string
+        example: sort=-eventDetails.startTimeStamp
+      - name: maxResults
+        in: query
+        description: |-
+          The maxResults query parameter limits results equal to # of maxResults. Example:
+            * To get latest attributeEvent among whole attributeEvents, use /attributeEvents?maxResults=1
+            * To limit attributeEvents to 5, use /attributeEvents?maxResults=5
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+        example: maxResults=5
+      - name: embedded
+        in: query
+        description: |-
+          The embedded clause takes a JSON as a string with eventSnaps argument. Example:
+            * 'To find attributeEvents with eventSnap object. use /attributeEvents?embedded={"eventSnaps":1}'
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: string
+        example: '{"eventSnaps":1}'
+      responses:
+        "200":
+          description: Get all attributeEvents
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/attributeEventsResponse'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+    post:
+      tags:
+      - engines
+      summary: Create an attributeEvent
+      description: Create an attributeEvent.
+      operationId: attribute_events_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/attributeEvent'
+      responses:
+        "201":
+          description: Create an attributeEvent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/defaultResponse'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+  /attributeEvents/{id}:
+    get:
+      tags:
+      - engines
+      summary: Get attributeEvent by id
+      description: Get attributeEvent by id
+      operationId: attribute_events_id_get
+      parameters:
+      - name: id
+        in: path
+        description: Unique ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: 5c1956e925b6b30001103eb6
+      - name: embedded
+        in: query
+        description: |-
+          The embedded clause takes a JSON as a string with eventSnaps argument. Example:
+            * 'To find attributeEvents with eventSnap object. use /attributeEvents/{id}?embedded={"eventSnaps":1}'
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: string
+        example: '{"eventSnaps":1}'
+      responses:
+        "200":
+          description: Get attributeEvent by id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/attributeEvent'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+  /eventSnaps:
+    get:
+      tags:
+      - engines
+      summary: Get all eventSnaps
+      description: Get all eventSnaps
+      operationId: event_snaps_get
+      responses:
+        "200":
+          description: Get all eventSnaps
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/eventSnapsResponse'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+    post:
+      tags:
+      - engines
+      summary: Create an eventSnap
+      description: Create an eventSnap.
+      operationId: event_snaps_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/snap'
+      responses:
+        "201":
+          description: Create an eventSnap
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/defaultResponse'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+  /eventSnaps/{id}:
+    get:
+      tags:
+      - engines
+      summary: Get eventSnap by id
+      description: Get eventSnap by id
+      operationId: event_snaps_id_get
+      parameters:
+      - name: id
+        in: path
+        description: Unique ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          format: string
+        example: 5c1956e925b6b30001103eb6
+      responses:
+        "200":
+          description: Get eventSnap by id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/snap'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+  /snaps:
+    get:
+      tags:
+      - engines
+      summary: Get all unprocesed snaps
+      description: Get all unprocesed snaps
+      operationId: snaps_get
+      responses:
+        "200":
+          description: Get all unprocesed snaps
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/snapsResponse'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+    post:
+      tags:
+      - engines
+      summary: Create a unprocesed snap
+      description: Create an unprocesed snap
+      operationId: snaps_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/snap'
+      responses:
+        "201":
+          description: Create an unprocesed snap
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/defaultResponse'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+  /snaps/{id}:
+    get:
+      tags:
+      - engines
+      summary: Get snap by id
+      description: Get snap by id
+      operationId: snaps_id_get
+      parameters:
+      - name: id
+        in: path
+        description: Unique ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: 5c1956e925b6b30001103eb6
+      responses:
+        "200":
+          description: Get snap by id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/snap'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+  /clips:
+    get:
+      tags:
+      - engines
+      summary: Get all unprocesed clips
+      description: Get all unprocesed clips
+      operationId: clips_get
+      responses:
+        "200":
+          description: Get all unprocesed clips
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/clipsResponse'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+    post:
+      tags:
+      - engines
+      summary: Create an unprocesed clip
+      description: Create an unprocesed clip
+      operationId: clips_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/clip'
+      responses:
+        "201":
+          description: Create an unprocesed clip
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/defaultResponse'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+  /clips/{id}:
+    get:
+      tags:
+      - engines
+      summary: Get clip by id
+      description: Get clip by id
+      operationId: clips_id_get
+      parameters:
+      - name: id
+        in: path
+        description: Unique ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: 5c1956e925b6b30001103eb6
+      responses:
+        "200":
+          description: Get clip by id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/clip'
+      x-openapi-router-controller: swagger_server.controllers.engines_controller
+components:
+  schemas:
+    engineTask:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: string
+          readOnly: true
+          example: 5c1956e925b6b30001103eb6
+        capbilitiesType:
+          $ref: '#/components/schemas/capability'
+        eventType:
+          $ref: '#/components/schemas/eventType'
+        engineMachineId:
+          type: string
+          format: string
+          example: 48c8a4b13c974a19bf0a7c50fa5e47a0
+        isExpired:
+          type: boolean
+          description: 'Explanations: * true = Engines will NEVER execute this task
+            * false = Engines will execute this task * Engine must patch this flag
+            to true when completes processing or have found "timeToLive" has passed
+            task creation time'
+          example: false
+          default: false
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/capability'
+        timeToLive:
+          type: integer
+          description: 'Time in milliseconds of expiry or the task. Engines will not
+            execute an expired task. Explanations: * -1 = Never expires * -2 = Expired
+            *  0 = Will expire in 0 milliseconds * >0 = This task is invalid and must
+            not be executed after >0 milliseconds from task creation time'
+          format: int64
+          example: -1
+          default: -1
+        source:
+          $ref: '#/components/schemas/sourceEndPoint'
+        destination:
+          $ref: '#/components/schemas/destinationEndPoint'
+        zoneSetting:
+          $ref: '#/components/schemas/engineTask_zoneSetting'
+        lineSetting:
+          $ref: '#/components/schemas/engineTask_lineSetting'
+        config:
+          type: array
+          example:
+          - key: clusterThF
+            value: "0.5"
+          - key: disimilarityThF
+            value: "0.5"
+          - key: min_match_counterI
+            value: "3"
+          - key: faceAngleTh
+            value: "20"
+          - key: posMatchCounter
+            value: "30"
+          - key: motionTh
+            value: "10"
+          - key: minOccupency
+            value: 80%
+          - key: minNoOfPeopleInCrowd
+            value: "8"
+          - key: observationDurationInSec
+            value: "40"
+          - key: gapBetweenEventsInSec
+            value: "120"
+          items:
+            $ref: '#/components/schemas/config'
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+          example: 2019-01-17T11:25:04Z
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+          example: 2019-01-17T11:25:04Z
+        etag:
+          type: string
+          format: string
+          example: f7d6f2133d892ca3be7ee54d77c14bb15f75f72e
+        links:
+          $ref: '#/components/schemas/links'
+      example:
+        created: 2019-01-17T11:25:04Z
+        destination:
+          destinationList:
+          - sourceId: 5c0d611b23aa7c0001a3b6ec
+            baseUrl: bucket
+            pass: admin
+            name: visage/
+            type: S3
+            user: admin
+          - sourceId: 5c0d611b23aa7c0001a3b6ec
+            baseUrl: bucket
+            pass: admin
+            name: visage/
+            type: S3
+            user: admin
+          extras:
+          - key: vasjobid
+            value: "1553848496172609"
+          - key: message
+            value: Instusion Detection
+          - key: action
+            value: Take action at high priority
+          - key: priority
+            value: "1"
+        eventType: eventType
+        source:
+          snaps:
+          - source: type1
+            count: 1
+            preEventSec: 10
+            postEventSec: 0
+          - source: type2
+            count: 6
+            preEventSec: 0
+            postEventSec: 60
+          - source: type3
+            count: 12
+            preEventSec: 50
+            postEventSec: 60
+          schedule:
+          - - "off"
+            - type1
+            - type2
+            - "off"
+            - '... 24'
+          - - type1
+            - type1
+            - type2
+            - type1
+            - '... 24'
+          - - "off"
+            - type1
+            - type2
+            - "off"
+            - '... 24'
+          - - "off"
+            - type1
+            - type2
+            - "off"
+            - '... 24'
+          - - "off"
+            - type1
+            - type2
+            - "off"
+            - '... 24'
+          - - "off"
+            - type1
+            - type2
+            - "off"
+            - '... 24'
+          - - "off"
+            - type1
+            - type2
+            - "off"
+            - '... 24'
+          startTimeStamp: 1546041600000
+          sourceList:
+          - sourceId: 5c0d611b23aa7c0001a3b6ec
+            baseUrl: 192.168.1.62
+            pass: admin
+            type: rtsp
+            user: admin
+          - sourceId: 5c0d611b23aa7c0001a3b6ec
+            baseUrl: 192.168.1.62
+            pass: admin
+            type: rtsp
+            user: admin
+          clips:
+          - source: type1
+            count: 1
+            preEventSec: 20
+            postEventSec: 0
+          - source: type2
+            count: 1
+            preEventSec: 0
+            postEventSec: 20
+          - source: type3
+            count: 1
+            preEventSec: 60
+            postEventSec: 60
+          endTimeStamp: 1546041600000
+        lineSetting:
+          referenceWidth: 640
+          referenceHeight: 480
+          lines:
+          - null
+          - null
+        capbilitiesType: 211
+        zoneSetting:
+          referenceWidth: 640
+          referenceHeight: 480
+          zones:
+          - vertices:
+            - x: 10
+              y: 10
+            - x: 10
+              y: 10
+            numberOfVertices: 4
+            zoneId: 1
+            zoneType: interest
+            lineSetting:
+              vertices:
+              - null
+              - null
+              lineType: entry
+              id: 1
+              config:
+              - key: observationDurationInSec
+                value: "40"
+              - key: gapBetweenEventsInSec
+                value: "120"
+            config:
+            - key: minNoOfPeopleInCrowd
+              value: "8"
+            - key: observationDurationInSec
+              value: "40"
+            - key: gapBetweenEventsInSec
+              value: "120"
+          - vertices:
+            - x: 10
+              y: 10
+            - x: 10
+              y: 10
+            numberOfVertices: 4
+            zoneId: 1
+            zoneType: interest
+            lineSetting:
+              vertices:
+              - null
+              - null
+              lineType: entry
+              id: 1
+              config:
+              - key: observationDurationInSec
+                value: "40"
+              - key: gapBetweenEventsInSec
+                value: "120"
+            config:
+            - key: minNoOfPeopleInCrowd
+              value: "8"
+            - key: observationDurationInSec
+              value: "40"
+            - key: gapBetweenEventsInSec
+              value: "120"
+        timeToLive: -1
+        engineMachineId: 48c8a4b13c974a19bf0a7c50fa5e47a0
+        children:
+        - null
+        - null
+        etag: f7d6f2133d892ca3be7ee54d77c14bb15f75f72e
+        links:
+          next: null
+          parent:
+            href: collection?maxResults=2&page=3
+            title: collection
+          last: null
+          prev: null
+          self: null
+          collection: null
+        _id: 5c1956e925b6b30001103eb6
+        isExpired: false
+        config:
+        - key: clusterThF
+          value: "0.5"
+        - key: disimilarityThF
+          value: "0.5"
+        - key: min_match_counterI
+          value: "3"
+        - key: faceAngleTh
+          value: "20"
+        - key: posMatchCounter
+          value: "30"
+        - key: motionTh
+          value: "10"
+        - key: minOccupency
+          value: 80%
+        - key: minNoOfPeopleInCrowd
+          value: "8"
+        - key: observationDurationInSec
+          value: "40"
+        - key: gapBetweenEventsInSec
+          value: "120"
+        updated: 2019-01-17T11:25:04Z
+    engineTasksResponse:
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/engineTask'
+        links:
+          $ref: '#/components/schemas/links'
+        meta:
+          $ref: '#/components/schemas/meta'
+      example:
+        meta:
+          total: 100
+          maxResults: 25
+          page: 1
+        links: null
+        items:
+        - created: 2019-01-17T11:25:04Z
+          destination:
+            destinationList:
+            - sourceId: 5c0d611b23aa7c0001a3b6ec
+              baseUrl: bucket
+              pass: admin
+              name: visage/
+              type: S3
+              user: admin
+            - sourceId: 5c0d611b23aa7c0001a3b6ec
+              baseUrl: bucket
+              pass: admin
+              name: visage/
+              type: S3
+              user: admin
+            extras:
+            - key: vasjobid
+              value: "1553848496172609"
+            - key: message
+              value: Instusion Detection
+            - key: action
+              value: Take action at high priority
+            - key: priority
+              value: "1"
+          eventType: eventType
+          source:
+            snaps:
+            - source: type1
+              count: 1
+              preEventSec: 10
+              postEventSec: 0
+            - source: type2
+              count: 6
+              preEventSec: 0
+              postEventSec: 60
+            - source: type3
+              count: 12
+              preEventSec: 50
+              postEventSec: 60
+            schedule:
+            - - "off"
+              - type1
+              - type2
+              - "off"
+              - '... 24'
+            - - type1
+              - type1
+              - type2
+              - type1
+              - '... 24'
+            - - "off"
+              - type1
+              - type2
+              - "off"
+              - '... 24'
+            - - "off"
+              - type1
+              - type2
+              - "off"
+              - '... 24'
+            - - "off"
+              - type1
+              - type2
+              - "off"
+              - '... 24'
+            - - "off"
+              - type1
+              - type2
+              - "off"
+              - '... 24'
+            - - "off"
+              - type1
+              - type2
+              - "off"
+              - '... 24'
+            startTimeStamp: 1546041600000
+            sourceList:
+            - sourceId: 5c0d611b23aa7c0001a3b6ec
+              baseUrl: 192.168.1.62
+              pass: admin
+              type: rtsp
+              user: admin
+            - sourceId: 5c0d611b23aa7c0001a3b6ec
+              baseUrl: 192.168.1.62
+              pass: admin
+              type: rtsp
+              user: admin
+            clips:
+            - source: type1
+              count: 1
+              preEventSec: 20
+              postEventSec: 0
+            - source: type2
+              count: 1
+              preEventSec: 0
+              postEventSec: 20
+            - source: type3
+              count: 1
+              preEventSec: 60
+              postEventSec: 60
+            endTimeStamp: 1546041600000
+          lineSetting:
+            referenceWidth: 640
+            referenceHeight: 480
+            lines:
+            - null
+            - null
+          capbilitiesType: 211
+          zoneSetting:
+            referenceWidth: 640
+            referenceHeight: 480
+            zones:
+            - vertices:
+              - x: 10
+                y: 10
+              - x: 10
+                y: 10
+              numberOfVertices: 4
+              zoneId: 1
+              zoneType: interest
+              lineSetting:
+                vertices:
+                - null
+                - null
+                lineType: entry
+                id: 1
+                config:
+                - key: observationDurationInSec
+                  value: "40"
+                - key: gapBetweenEventsInSec
+                  value: "120"
+              config:
+              - key: minNoOfPeopleInCrowd
+                value: "8"
+              - key: observationDurationInSec
+                value: "40"
+              - key: gapBetweenEventsInSec
+                value: "120"
+            - vertices:
+              - x: 10
+                y: 10
+              - x: 10
+                y: 10
+              numberOfVertices: 4
+              zoneId: 1
+              zoneType: interest
+              lineSetting:
+                vertices:
+                - null
+                - null
+                lineType: entry
+                id: 1
+                config:
+                - key: observationDurationInSec
+                  value: "40"
+                - key: gapBetweenEventsInSec
+                  value: "120"
+              config:
+              - key: minNoOfPeopleInCrowd
+                value: "8"
+              - key: observationDurationInSec
+                value: "40"
+              - key: gapBetweenEventsInSec
+                value: "120"
+          timeToLive: -1
+          engineMachineId: 48c8a4b13c974a19bf0a7c50fa5e47a0
+          children:
+          - null
+          - null
+          etag: f7d6f2133d892ca3be7ee54d77c14bb15f75f72e
+          links:
+            next: null
+            parent:
+              href: collection?maxResults=2&page=3
+              title: collection
+            last: null
+            prev: null
+            self: null
+            collection: null
+          _id: 5c1956e925b6b30001103eb6
+          isExpired: false
+          config:
+          - key: clusterThF
+            value: "0.5"
+          - key: disimilarityThF
+            value: "0.5"
+          - key: min_match_counterI
+            value: "3"
+          - key: faceAngleTh
+            value: "20"
+          - key: posMatchCounter
+            value: "30"
+          - key: motionTh
+            value: "10"
+          - key: minOccupency
+            value: 80%
+          - key: minNoOfPeopleInCrowd
+            value: "8"
+          - key: observationDurationInSec
+            value: "40"
+          - key: gapBetweenEventsInSec
+            value: "120"
+          updated: 2019-01-17T11:25:04Z
+        - created: 2019-01-17T11:25:04Z
+          destination:
+            destinationList:
+            - sourceId: 5c0d611b23aa7c0001a3b6ec
+              baseUrl: bucket
+              pass: admin
+              name: visage/
+              type: S3
+              user: admin
+            - sourceId: 5c0d611b23aa7c0001a3b6ec
+              baseUrl: bucket
+              pass: admin
+              name: visage/
+              type: S3
+              user: admin
+            extras:
+            - key: vasjobid
+              value: "1553848496172609"
+            - key: message
+              value: Instusion Detection
+            - key: action
+              value: Take action at high priority
+            - key: priority
+              value: "1"
+          eventType: eventType
+          source:
+            snaps:
+            - source: type1
+              count: 1
+              preEventSec: 10
+              postEventSec: 0
+            - source: type2
+              count: 6
+              preEventSec: 0
+              postEventSec: 60
+            - source: type3
+              count: 12
+              preEventSec: 50
+              postEventSec: 60
+            schedule:
+            - - "off"
+              - type1
+              - type2
+              - "off"
+              - '... 24'
+            - - type1
+              - type1
+              - type2
+              - type1
+              - '... 24'
+            - - "off"
+              - type1
+              - type2
+              - "off"
+              - '... 24'
+            - - "off"
+              - type1
+              - type2
+              - "off"
+              - '... 24'
+            - - "off"
+              - type1
+              - type2
+              - "off"
+              - '... 24'
+            - - "off"
+              - type1
+              - type2
+              - "off"
+              - '... 24'
+            - - "off"
+              - type1
+              - type2
+              - "off"
+              - '... 24'
+            startTimeStamp: 1546041600000
+            sourceList:
+            - sourceId: 5c0d611b23aa7c0001a3b6ec
+              baseUrl: 192.168.1.62
+              pass: admin
+              type: rtsp
+              user: admin
+            - sourceId: 5c0d611b23aa7c0001a3b6ec
+              baseUrl: 192.168.1.62
+              pass: admin
+              type: rtsp
+              user: admin
+            clips:
+            - source: type1
+              count: 1
+              preEventSec: 20
+              postEventSec: 0
+            - source: type2
+              count: 1
+              preEventSec: 0
+              postEventSec: 20
+            - source: type3
+              count: 1
+              preEventSec: 60
+              postEventSec: 60
+            endTimeStamp: 1546041600000
+          lineSetting:
+            referenceWidth: 640
+            referenceHeight: 480
+            lines:
+            - null
+            - null
+          capbilitiesType: 211
+          zoneSetting:
+            referenceWidth: 640
+            referenceHeight: 480
+            zones:
+            - vertices:
+              - x: 10
+                y: 10
+              - x: 10
+                y: 10
+              numberOfVertices: 4
+              zoneId: 1
+              zoneType: interest
+              lineSetting:
+                vertices:
+                - null
+                - null
+                lineType: entry
+                id: 1
+                config:
+                - key: observationDurationInSec
+                  value: "40"
+                - key: gapBetweenEventsInSec
+                  value: "120"
+              config:
+              - key: minNoOfPeopleInCrowd
+                value: "8"
+              - key: observationDurationInSec
+                value: "40"
+              - key: gapBetweenEventsInSec
+                value: "120"
+            - vertices:
+              - x: 10
+                y: 10
+              - x: 10
+                y: 10
+              numberOfVertices: 4
+              zoneId: 1
+              zoneType: interest
+              lineSetting:
+                vertices:
+                - null
+                - null
+                lineType: entry
+                id: 1
+                config:
+                - key: observationDurationInSec
+                  value: "40"
+                - key: gapBetweenEventsInSec
+                  value: "120"
+              config:
+              - key: minNoOfPeopleInCrowd
+                value: "8"
+              - key: observationDurationInSec
+                value: "40"
+              - key: gapBetweenEventsInSec
+                value: "120"
+          timeToLive: -1
+          engineMachineId: 48c8a4b13c974a19bf0a7c50fa5e47a0
+          children:
+          - null
+          - null
+          etag: f7d6f2133d892ca3be7ee54d77c14bb15f75f72e
+          links:
+            next: null
+            parent:
+              href: collection?maxResults=2&page=3
+              title: collection
+            last: null
+            prev: null
+            self: null
+            collection: null
+          _id: 5c1956e925b6b30001103eb6
+          isExpired: false
+          config:
+          - key: clusterThF
+            value: "0.5"
+          - key: disimilarityThF
+            value: "0.5"
+          - key: min_match_counterI
+            value: "3"
+          - key: faceAngleTh
+            value: "20"
+          - key: posMatchCounter
+            value: "30"
+          - key: motionTh
+            value: "10"
+          - key: minOccupency
+            value: 80%
+          - key: minNoOfPeopleInCrowd
+            value: "8"
+          - key: observationDurationInSec
+            value: "40"
+          - key: gapBetweenEventsInSec
+            value: "120"
+          updated: 2019-01-17T11:25:04Z
+    enginesResponse:
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/engine'
+        links:
+          $ref: '#/components/schemas/links'
+        meta:
+          $ref: '#/components/schemas/meta'
+      example:
+        meta:
+          total: 100
+          maxResults: 25
+          page: 1
+        links: null
+        items:
+        - machineId: 48c8a4b13c974a19bf0a7c50fa5e47a0
+          capabilities:
+          - 211
+          - 211
+          created: 2019-01-17T11:25:04Z
+          etag: f7d6f2133d892ca3be7ee54d77c14bb15f75f72e
+          links:
+            next: null
+            parent:
+              href: collection?maxResults=2&page=3
+              title: collection
+            last: null
+            prev: null
+            self: null
+            collection: null
+          _id: 5c1956e925b6b30001103eb6
+          updated: 2019-01-17T11:25:04Z
+        - machineId: 48c8a4b13c974a19bf0a7c50fa5e47a0
+          capabilities:
+          - 211
+          - 211
+          created: 2019-01-17T11:25:04Z
+          etag: f7d6f2133d892ca3be7ee54d77c14bb15f75f72e
+          links:
+            next: null
+            parent:
+              href: collection?maxResults=2&page=3
+              title: collection
+            last: null
+            prev: null
+            self: null
+            collection: null
+          _id: 5c1956e925b6b30001103eb6
+          updated: 2019-01-17T11:25:04Z
+    snap:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: string
+          readOnly: true
+          example: 5c1956e925b6b30001103eb6
+        snap:
+          type: string
+          format: uri
+          example: https://s3.amazonaws.com/monotosh/snaps/fe6d3dd9-2820-4512-81c2-2e871db3cdaf.jpg
+        fullSnap:
+          type: string
+          format: uri
+          nullable: true
+          example: https://s3.amazonaws.com/monotosh/snaps/fe6d3dd9-2820-4512-81c2-2e871db3cdaf.jpg
+          default: ""
+        snapId:
+          type: string
+          format: string
+          example: fe6d3dd9-2820-4512-81c2-2e871db3cdaf
+        snapTimeStamp:
+          type: integer
+          description: Unix timestamp when snap is taken
+          format: int64
+          example: 1546041600000
+        processCount:
+          type: integer
+          format: int32
+          nullable: true
+          example: 0
+          default: 0
+        registeredFaceId:
+          type: string
+          format: string
+          nullable: true
+          example: barak_obama_1
+          default: "0"
+        featureVector1:
+          type: array
+          nullable: true
+          items:
+            type: array
+            items:
+              type: number
+              format: double
+              default: 0
+        featureVector2:
+          type: array
+          nullable: true
+          items:
+            type: array
+            items:
+              type: number
+              format: double
+              default: 0
+        confidence:
+          type: number
+          format: float
+          nullable: true
+          example: 0.04
+          default: 0
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+          example: 2019-01-17T11:25:04Z
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+          example: 2019-01-17T11:25:04Z
+        etag:
+          type: string
+          format: string
+          example: f7d6f2133d892ca3be7ee54d77c14bb15f75f72e
+        links:
+          $ref: '#/components/schemas/links'
+      example:
+        processCount: 0
+        featureVector1:
+        - - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+        - - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+        registeredFaceId: barak_obama_1
+        featureVector2:
+        - - 6.02745618307040320615897144307382404804229736328125
+          - 6.02745618307040320615897144307382404804229736328125
+        - - 6.02745618307040320615897144307382404804229736328125
+          - 6.02745618307040320615897144307382404804229736328125
+        created: 2019-01-17T11:25:04Z
+        confidence: 0.04
+        fullSnap: https://s3.amazonaws.com/monotosh/snaps/fe6d3dd9-2820-4512-81c2-2e871db3cdaf.jpg
+        etag: f7d6f2133d892ca3be7ee54d77c14bb15f75f72e
+        links:
+          next: null
+          parent:
+            href: collection?maxResults=2&page=3
+            title: collection
+          last: null
+          prev: null
+          self: null
+          collection: null
+        _id: 5c1956e925b6b30001103eb6
+        snapId: fe6d3dd9-2820-4512-81c2-2e871db3cdaf
+        updated: 2019-01-17T11:25:04Z
+        snapTimeStamp: 1546041600000
+        snap: https://s3.amazonaws.com/monotosh/snaps/fe6d3dd9-2820-4512-81c2-2e871db3cdaf.jpg
+    clip:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: string
+          readOnly: true
+          example: 5c1956e925b6b30001103eba
+        clip:
+          type: string
+          format: uri
+          example: https://s3.amazonaws.com/bucket/clips/fe6d3dd9-2820-4512-81c2-2e871db3cdaf.mp4
+        clipId:
+          type: string
+          format: string
+          example: fe6d3dd9-2820-4512-81c2-2e871db3cdaf
+        starpTimeStamp:
+          type: integer
+          description: Unix timestamp from when clip is recorded
+          format: int64
+          example: 1546041600000
+        endTimeStamp:
+          type: integer
+          description: Unix timestamp till when clip is recorded
+          format: int64
+          example: 1546041600000
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+          example: 2019-01-17T11:25:04Z
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+          example: 2019-01-17T11:25:04Z
+        etag:
+          type: string
+          format: string
+          example: f7d6f2133d892ca3be7ee54d77c14bb15f75f72f
+        links:
+          $ref: '#/components/schemas/links'
+      example:
+        created: 2019-01-17T11:25:04Z
+        clipId: fe6d3dd9-2820-4512-81c2-2e871db3cdaf
+        endTimeStamp: 1546041600000
+        starpTimeStamp: 1546041600000
+        etag: f7d6f2133d892ca3be7ee54d77c14bb15f75f72f
+        links:
+          next: null
+          parent:
+            href: collection?maxResults=2&page=3
+            title: collection
+          last: null
+          prev: null
+          self: null
+          collection: null
+        _id: 5c1956e925b6b30001103eba
+        updated: 2019-01-17T11:25:04Z
+        clip: https://s3.amazonaws.com/bucket/clips/fe6d3dd9-2820-4512-81c2-2e871db3cdaf.mp4
+    snapsResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/snap'
+        links:
+          $ref: '#/components/schemas/links'
+        meta:
+          $ref: '#/components/schemas/meta'
+      example:
+        meta:
+          total: 100
+          maxResults: 25
+          page: 1
+        links:
+          next: null
+          parent:
+            href: collection?maxResults=2&page=3
+            title: collection
+          last: null
+          prev: null
+          self: null
+          collection: null
+        items:
+        - processCount: 0
+          featureVector1:
+          - - 0.80082819046101150206595775671303272247314453125
+            - 0.80082819046101150206595775671303272247314453125
+          - - 0.80082819046101150206595775671303272247314453125
+            - 0.80082819046101150206595775671303272247314453125
+          registeredFaceId: barak_obama_1
+          featureVector2:
+          - - 6.02745618307040320615897144307382404804229736328125
+            - 6.02745618307040320615897144307382404804229736328125
+          - - 6.02745618307040320615897144307382404804229736328125
+            - 6.02745618307040320615897144307382404804229736328125
+          created: 2019-01-17T11:25:04Z
+          confidence: 0.04
+          fullSnap: https://s3.amazonaws.com/monotosh/snaps/fe6d3dd9-2820-4512-81c2-2e871db3cdaf.jpg
+          etag: f7d6f2133d892ca3be7ee54d77c14bb15f75f72e
+          links:
+            next: null
+            parent:
+              href: collection?maxResults=2&page=3
+              title: collection
+            last: null
+            prev: null
+            self: null
+            collection: null
+          _id: 5c1956e925b6b30001103eb6
+          snapId: fe6d3dd9-2820-4512-81c2-2e871db3cdaf
+          updated: 2019-01-17T11:25:04Z
+          snapTimeStamp: 1546041600000
+          snap: https://s3.amazonaws.com/monotosh/snaps/fe6d3dd9-2820-4512-81c2-2e871db3cdaf.jpg
+        - processCount: 0
+          featureVector1:
+          - - 0.80082819046101150206595775671303272247314453125
+            - 0.80082819046101150206595775671303272247314453125
+          - - 0.80082819046101150206595775671303272247314453125
+            - 0.80082819046101150206595775671303272247314453125
+          registeredFaceId: barak_obama_1
+          featureVector2:
+          - - 6.02745618307040320615897144307382404804229736328125
+            - 6.02745618307040320615897144307382404804229736328125
+          - - 6.02745618307040320615897144307382404804229736328125
+            - 6.02745618307040320615897144307382404804229736328125
+          created: 2019-01-17T11:25:04Z
+          confidence: 0.04
+          fullSnap: https://s3.amazonaws.com/monotosh/snaps/fe6d3dd9-2820-4512-81c2-2e871db3cdaf.jpg
+          etag: f7d6f2133d892ca3be7ee54d77c14bb15f75f72e
+          links:
+            next: null
+            parent:
+              href: collection?maxResults=2&page=3
+              title: collection
+            last: null
+            prev: null
+            self: null
+            collection: null
+          _id: 5c1956e925b6b30001103eb6
+          snapId: fe6d3dd9-2820-4512-81c2-2e871db3cdaf
+          updated: 2019-01-17T11:25:04Z
+          snapTimeStamp: 1546041600000
+          snap: https://s3.amazonaws.com/monotosh/snaps/fe6d3dd9-2820-4512-81c2-2e871db3cdaf.jpg
+    clipsResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/clip'
+        links:
+          $ref: '#/components/schemas/links'
+        meta:
+          $ref: '#/components/schemas/meta'
+      example:
+        meta:
+          total: 100
+          maxResults: 25
+          page: 1
+        links: null
+        items:
+        - created: 2019-01-17T11:25:04Z
+          clipId: fe6d3dd9-2820-4512-81c2-2e871db3cdaf
+          endTimeStamp: 1546041600000
+          starpTimeStamp: 1546041600000
+          etag: f7d6f2133d892ca3be7ee54d77c14bb15f75f72f
+          links:
+            next: null
+            parent:
+              href: collection?maxResults=2&page=3
+              title: collection
+            last: null
+            prev: null
+            self: null
+            collection: null
+          _id: 5c1956e925b6b30001103eba
+          updated: 2019-01-17T11:25:04Z
+          clip: https://s3.amazonaws.com/bucket/clips/fe6d3dd9-2820-4512-81c2-2e871db3cdaf.mp4
+        - created: 2019-01-17T11:25:04Z
+          clipId: fe6d3dd9-2820-4512-81c2-2e871db3cdaf
+          endTimeStamp: 1546041600000
+          starpTimeStamp: 1546041600000
+          etag: f7d6f2133d892ca3be7ee54d77c14bb15f75f72f
+          links:
+            next: null
+            parent:
+              href: collection?maxResults=2&page=3
+              title: collection
+            last: null
+            prev: null
+            self: null
+            collection: null
+          _id: 5c1956e925b6b30001103eba
+          updated: 2019-01-17T11:25:04Z
+          clip: https://s3.amazonaws.com/bucket/clips/fe6d3dd9-2820-4512-81c2-2e871db3cdaf.mp4
+    zone:
+      type: object
+      properties:
+        zoneId:
+          type: integer
+          format: int64
+          example: 1
+          default: 0
+        zoneType:
+          $ref: '#/components/schemas/zoneType'
+        numberOfVertices:
+          type: integer
+          format: int32
+          example: 4
+          default: 4
+        vertices:
+          type: array
+          items:
+            $ref: '#/components/schemas/vertex'
+        lineSetting:
+          $ref: '#/components/schemas/line'
+        config:
+          type: array
+          example:
+          - key: minNoOfPeopleInCrowd
+            value: "8"
+          - key: observationDurationInSec
+            value: "40"
+          - key: gapBetweenEventsInSec
+            value: "120"
+          items:
+            $ref: '#/components/schemas/config'
+      example:
+        vertices:
+        - x: 10
+          y: 10
+        - x: 10
+          y: 10
+        numberOfVertices: 4
+        zoneId: 1
+        zoneType: interest
+        lineSetting:
+          vertices:
+          - null
+          - null
+          lineType: entry
+          id: 1
+          config:
+          - key: observationDurationInSec
+            value: "40"
+          - key: gapBetweenEventsInSec
+            value: "120"
+        config:
+        - key: minNoOfPeopleInCrowd
+          value: "8"
+        - key: observationDurationInSec
+          value: "40"
+        - key: gapBetweenEventsInSec
+          value: "120"
+    zoneType:
+      type: string
+      description: |-
+        Following zone types supported:
+         * `'interest'` - process this zone
+         * `'mask'` - Do NOT process this zone
+         * `'none'` - none
+      format: string
+      example: interest
+      default: none
+      enum:
+      - interest
+      - mask
+      - none
+    line:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 1
+          default: 1
+        lineType:
+          $ref: '#/components/schemas/lineType'
+        vertices:
+          type: array
+          items:
+            $ref: '#/components/schemas/vertex'
+        config:
+          type: array
+          example:
+          - key: observationDurationInSec
+            value: "40"
+          - key: gapBetweenEventsInSec
+            value: "120"
+          items:
+            $ref: '#/components/schemas/config'
+      example:
+        vertices:
+        - null
+        - null
+        lineType: entry
+        id: 1
+        config:
+        - key: observationDurationInSec
+          value: "40"
+        - key: gapBetweenEventsInSec
+          value: "120"
+    lineType:
+      type: string
+      description: |-
+        Following line types supported:
+         * `'entry'` - entry
+         * `'exit'` - exit
+         * `'both'` - both
+         * `'none'` - none
+      format: string
+      example: entry
+      default: none
+      enum:
+      - entry
+      - exit
+      - both
+      - none
+    vertex:
+      type: object
+      properties:
+        x:
+          type: integer
+          format: int32
+          example: 10
+          default: 0
+        y:
+          type: integer
+          format: int32
+          example: 10
+          default: 0
+      example:
+        x: 10
+        y: 10
+    config:
+      type: object
+      properties:
+        key:
+          type: string
+          format: string
+          example: clusterThF
+        value:
+          type: string
+          format: string
+          example: "0.5"
+    engine:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: string
+          readOnly: true
+          example: 5c1956e925b6b30001103eb6
+        machineId:
+          type: string
+          format: string
+          example: 48c8a4b13c974a19bf0a7c50fa5e47a0
+        capabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/capability'
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+          example: 2019-01-17T11:25:04Z
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+          example: 2019-01-17T11:25:04Z
+        etag:
+          type: string
+          format: string
+          example: f7d6f2133d892ca3be7ee54d77c14bb15f75f72e
+        links:
+          $ref: '#/components/schemas/links'
+      example:
+        machineId: 48c8a4b13c974a19bf0a7c50fa5e47a0
+        capabilities:
+        - 211
+        - 211
+        created: 2019-01-17T11:25:04Z
+        etag: f7d6f2133d892ca3be7ee54d77c14bb15f75f72e
+        links:
+          next: null
+          parent:
+            href: collection?maxResults=2&page=3
+            title: collection
+          last: null
+          prev: null
+          self: null
+          collection: null
+        _id: 5c1956e925b6b30001103eb6
+        updated: 2019-01-17T11:25:04Z
+    eventSnapsResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/snap'
+        links:
+          $ref: '#/components/schemas/links'
+        meta:
+          $ref: '#/components/schemas/meta'
+      example:
+        meta:
+          total: 100
+          maxResults: 25
+          page: 1
+        links: null
+        items:
+        - processCount: 0
+          featureVector1:
+          - - 0.80082819046101150206595775671303272247314453125
+            - 0.80082819046101150206595775671303272247314453125
+          - - 0.80082819046101150206595775671303272247314453125
+            - 0.80082819046101150206595775671303272247314453125
+          registeredFaceId: barak_obama_1
+          featureVector2:
+          - - 6.02745618307040320615897144307382404804229736328125
+            - 6.02745618307040320615897144307382404804229736328125
+          - - 6.02745618307040320615897144307382404804229736328125
+            - 6.02745618307040320615897144307382404804229736328125
+          created: 2019-01-17T11:25:04Z
+          confidence: 0.04
+          fullSnap: https://s3.amazonaws.com/monotosh/snaps/fe6d3dd9-2820-4512-81c2-2e871db3cdaf.jpg
+          etag: f7d6f2133d892ca3be7ee54d77c14bb15f75f72e
+          links:
+            next: null
+            parent:
+              href: collection?maxResults=2&page=3
+              title: collection
+            last: null
+            prev: null
+            self: null
+            collection: null
+          _id: 5c1956e925b6b30001103eb6
+          snapId: fe6d3dd9-2820-4512-81c2-2e871db3cdaf
+          updated: 2019-01-17T11:25:04Z
+          snapTimeStamp: 1546041600000
+          snap: https://s3.amazonaws.com/monotosh/snaps/fe6d3dd9-2820-4512-81c2-2e871db3cdaf.jpg
+        - processCount: 0
+          featureVector1:
+          - - 0.80082819046101150206595775671303272247314453125
+            - 0.80082819046101150206595775671303272247314453125
+          - - 0.80082819046101150206595775671303272247314453125
+            - 0.80082819046101150206595775671303272247314453125
+          registeredFaceId: barak_obama_1
+          featureVector2:
+          - - 6.02745618307040320615897144307382404804229736328125
+            - 6.02745618307040320615897144307382404804229736328125
+          - - 6.02745618307040320615897144307382404804229736328125
+            - 6.02745618307040320615897144307382404804229736328125
+          created: 2019-01-17T11:25:04Z
+          confidence: 0.04
+          fullSnap: https://s3.amazonaws.com/monotosh/snaps/fe6d3dd9-2820-4512-81c2-2e871db3cdaf.jpg
+          etag: f7d6f2133d892ca3be7ee54d77c14bb15f75f72e
+          links:
+            next: null
+            parent:
+              href: collection?maxResults=2&page=3
+              title: collection
+            last: null
+            prev: null
+            self: null
+            collection: null
+          _id: 5c1956e925b6b30001103eb6
+          snapId: fe6d3dd9-2820-4512-81c2-2e871db3cdaf
+          updated: 2019-01-17T11:25:04Z
+          snapTimeStamp: 1546041600000
+          snap: https://s3.amazonaws.com/monotosh/snaps/fe6d3dd9-2820-4512-81c2-2e871db3cdaf.jpg
+    meta:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+          example: 1
+        maxResults:
+          type: integer
+          format: int32
+          example: 25
+        total:
+          type: integer
+          format: int32
+          example: 100
+      readOnly: true
+      example:
+        total: 100
+        maxResults: 25
+        page: 1
+    extra:
+      type: object
+      properties:
+        key:
+          type: string
+          format: string
+          example: message
+        value:
+          type: string
+          format: string
+          example: Instusion Detection
+    metaAnprEvent:
+      type: object
+      properties:
+        vehicleNumber:
+          type: string
+          description: Vehicle number detected in OCR
+          format: string
+          example: WB08A12345
+        vehicleType:
+          $ref: '#/components/schemas/vehicleType'
+        vehicleColor:
+          $ref: '#/components/schemas/color'
+        vehicleMake:
+          type: string
+          format: string
+          nullable: true
+        vehicleModel:
+          type: string
+          format: string
+          nullable: true
+        countOfVehicle:
+          type: integer
+          format: int32
+          example: 0
+          default: 0
+        countOfTwoWheeler:
+          type: integer
+          format: int32
+          example: 0
+          default: 0
+        countOfHelmet:
+          type: integer
+          format: int32
+          example: 0
+          default: 0
+        countOfNoHelmet:
+          type: integer
+          format: int32
+          example: 0
+          default: 0
+        countOfTripleRide:
+          type: integer
+          format: int32
+          example: 0
+          default: 0
+    metaVaEvent:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+          nullable: false
+          example: 0
+          default: 0
+    metaAttributeEvent:
+      type: object
+      properties:
+        estimatedHeight:
+          type: integer
+          format: int32
+          example: 0
+          default: 0
+        topType:
+          type: string
+          format: string
+          nullable: true
+        topColor:
+          type: string
+          format: string
+          nullable: true
+        bottomType:
+          type: string
+          format: string
+          nullable: true
+        bottomColor:
+          type: string
+          format: string
+          nullable: true
+        sex:
+          type: string
+          format: string
+          nullable: true
+        presenceOfBag:
+          type: boolean
+          nullable: true
+          example: false
+        typeOfBag:
+          type: string
+          format: string
+          nullable: true
+        clothingPattern:
+          type: string
+          format: string
+          nullable: true
+        presenceOfHeadeDress:
+          type: boolean
+          nullable: true
+          example: false
+        typeOfHeadDress:
+          type: string
+          format: string
+          nullable: true
+        associatedObject:
+          type: string
+          format: string
+          nullable: true
+    eventDetails:
+      type: object
+      properties:
+        jobId:
+          type: string
+          format: string
+          nullable: false
+        cameraId:
+          type: string
+          description: '_id of camera #$ref: ''#/components/schemas/camera'' from
+            project cameras'
+          format: string
+          nullable: false
+          example: 5c1956e925b6b30001103eaa
+        cameraIp:
+          type: string
+          format: string
+          nullable: false
+          example: 192.168.1.154
+        cameraName:
+          type: string
+          format: string
+          nullable: false
+          example: 192.168.1.154
+        isValid:
+          type: boolean
+          description: If event validated by operator/admin
+          nullable: false
+          example: false
+          default: false
+        isRestricted:
+          type: boolean
+          description: If event validated by operator/admin
+          nullable: false
+          example: false
+          default: true
+        sourceId:
+          type: string
+          description: '_id of camera #$ref: ''#/components/schemas/camera'' from
+            project cameras'
+          format: string
+          example: 5c1956e925b6b30001103eaa
+        engineTaskId:
+          type: string
+          description: '_id of engineTasks #$ref: ''#/components/schemas/engineTasks'''
+          format: string
+          example: 5c1956e925b6b30001103eaa
+        zoneId:
+          type: integer
+          description: 'the zoneId of the engineTask in zoneSetting, #$ref: ''#/components/schemas/zone'''
+          format: int64
+          example: 1
+          default: 0
+        confidence:
+          type: number
+          description: match confidence predicted by engine during event detection
+          format: float
+          example: 0.9
+          default: 0
+        startTimeStamp:
+          type: integer
+          description: Event start timestamp in Unix epoch milliseconds
+          format: int64
+          example: 1546041600000
+        endTimeStamp:
+          type: integer
+          description: Event end timestamp in Unix epoch milliseconds
+          format: int64
+          example: 1546041600000
+        videoFileName:
+          type: string
+          description: Video file name if it is present
+          format: string
+          nullable: true
+          example: /media/1.mp4
+        captureTimeInVideo:
+          type: integer
+          description: Event timestamp in video in Unix epoch milliseconds
+          format: int64
+          example: 1546041600000
+          default: -1
+        gdprEnabled:
+          type: boolean
+          description: If gdpr enabled by admin
+          nullable: false
+          example: false
+          default: false
+        latitude:
+          type: number
+          format: float
+          example: 0.04
+          default: 0
+        longitude:
+          type: number
+          format: float
+          example: 0.04
+          default: 0
+        extras:
+          type: array
+          example:
+          - key: vasjobid
+            value: "1553848496172609"
+          - key: message
+            value: Instusion Detection
+          - key: action
+            value: Take action at high priority
+          - key: priority
+            value: "1"
+          items:
+            $ref: '#/components/schemas/extra'
+    event:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: string
+          readOnly: true
+          example: 5c1956e925b6b30001103eb6
+        capbilitiesType:
+          $ref: '#/components/schemas/capability'
+        eventType:
+          $ref: '#/components/schemas/eventType'
+        eventDetails:
+          $ref: '#/components/schemas/eventDetails'
+        eventSnaps:
+          type: array
+          description: '_id of snap from #$ref: ''#/components/schemas/snap'''
+          example:
+          - 5c1956e925b6b30001103eb5
+          - 5c1956e925b6b30001103eb6
+          - 5c1956e925b6b30001103eb9
+          items:
+            type: string
+            format: string
+        eventClips:
+          type: array
+          description: '_id of snap from #$ref: ''#/components/schemas/clip'''
+          example:
+          - 5c1956e925b6b30001103eb7
+          - 5c1956e925b6b30001103eb8
+          items:
+            type: string
+            format: string
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+          example: 2019-01-17T11:25:04Z
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+          example: 2019-01-17T11:25:04Z
+        etag:
+          type: string
+          format: string
+          example: f7d6f2133d892ca3be7ee54d77c14bb15f75f72e
+        links:
+          $ref: '#/components/schemas/links'
+      discriminator:
+        propertyName: eventType
+    sourceEndPoint:
+      type: object
+      properties:
+        sourceList:
+          type: array
+          items:
+            $ref: '#/components/schemas/sourceEndPoint_sourceList'
+        startTimeStamp:
+          type: integer
+          description: Process the source types FROM this unix timestamp
+          format: int64
+          example: 1546041600000
+        endTimeStamp:
+          type: integer
+          description: Process the source types TILL this unix timestamp
+          format: int64
+          example: 1546041600000
+        snaps:
+          type: array
+          example:
+          - source: type1
+            count: 1
+            preEventSec: 10
+            postEventSec: 0
+          - source: type2
+            count: 6
+            preEventSec: 0
+            postEventSec: 60
+          - source: type3
+            count: 12
+            preEventSec: 50
+            postEventSec: 60
+          items:
+            $ref: '#/components/schemas/evidenceConfig'
+        clips:
+          type: array
+          example:
+          - source: type1
+            count: 1
+            preEventSec: 20
+            postEventSec: 0
+          - source: type2
+            count: 1
+            preEventSec: 0
+            postEventSec: 20
+          - source: type3
+            count: 1
+            preEventSec: 60
+            postEventSec: 60
+          items:
+            $ref: '#/components/schemas/evidenceConfig'
+        schedule:
+          maxItems: 7
+          minItems: 7
+          type: array
+          example:
+          - - "off"
+            - type1
+            - type2
+            - "off"
+            - '... 24'
+          - - type1
+            - type1
+            - type2
+            - type1
+            - '... 24'
+          - - "off"
+            - type1
+            - type2
+            - "off"
+            - '... 24'
+          - - "off"
+            - type1
+            - type2
+            - "off"
+            - '... 24'
+          - - "off"
+            - type1
+            - type2
+            - "off"
+            - '... 24'
+          - - "off"
+            - type1
+            - type2
+            - "off"
+            - '... 24'
+          - - "off"
+            - type1
+            - type2
+            - "off"
+            - '... 24'
+          items:
+            maxItems: 24
+            minItems: 24
+            type: array
+            items:
+              $ref: '#/components/schemas/scheduleSource'
+      example:
+        snaps:
+        - source: type1
+          count: 1
+          preEventSec: 10
+          postEventSec: 0
+        - source: type2
+          count: 6
+          preEventSec: 0
+          postEventSec: 60
+        - source: type3
+          count: 12
+          preEventSec: 50
+          postEventSec: 60
+        schedule:
+        - - "off"
+          - type1
+          - type2
+          - "off"
+          - '... 24'
+        - - type1
+          - type1
+          - type2
+          - type1
+          - '... 24'
+        - - "off"
+          - type1
+          - type2
+          - "off"
+          - '... 24'
+        - - "off"
+          - type1
+          - type2
+          - "off"
+          - '... 24'
+        - - "off"
+          - type1
+          - type2
+          - "off"
+          - '... 24'
+        - - "off"
+          - type1
+          - type2
+          - "off"
+          - '... 24'
+        - - "off"
+          - type1
+          - type2
+          - "off"
+          - '... 24'
+        startTimeStamp: 1546041600000
+        sourceList:
+        - sourceId: 5c0d611b23aa7c0001a3b6ec
+          baseUrl: 192.168.1.62
+          pass: admin
+          type: rtsp
+          user: admin
+        - sourceId: 5c0d611b23aa7c0001a3b6ec
+          baseUrl: 192.168.1.62
+          pass: admin
+          type: rtsp
+          user: admin
+        clips:
+        - source: type1
+          count: 1
+          preEventSec: 20
+          postEventSec: 0
+        - source: type2
+          count: 1
+          preEventSec: 0
+          postEventSec: 20
+        - source: type3
+          count: 1
+          preEventSec: 60
+          postEventSec: 60
+        endTimeStamp: 1546041600000
+    sourceType:
+      type: string
+      description: "Capability id supported are as follows:\n * `'none'` - None\n\
+        \ * `'rtsp'` - RTSP Stream\n * `'http'` - HTTP Stream\n * `'file'` - Video\
+        \ file at Engine\n * `'ftp'` - File at FTP Server\n * `'vms'` - Stream from\
+        \ VMS\n * `'mqtt'` - MQ over mqtt protocol\n * `'amqp'` - MQ over amqp protocol\n\
+        \ * `'S3'` - Send to AWS S3 bucket\n * `'VS3'` - Send to Videonetics VS3\n\
+        \ * `'BaseUrl'` - Use complete baseUrl\n * `'RelativeUrl'` - Use complete\
+        \ relativeUrl\n "
+      format: string
+      example: rtsp
+      enum:
+      - none
+      - rtsp
+      - http
+      - file
+      - ftp
+      - vms
+      - mqtt
+      - amqp
+      - S3
+      - VS3
+      - BaseUrl
+      - RelativeUrl
+    evidenceConfig:
+      type: object
+      properties:
+        source:
+          $ref: '#/components/schemas/scheduleSource'
+        count:
+          type: integer
+          format: int32
+          example: 1
+          default: 1
+        preEventSec:
+          type: integer
+          format: int32
+          example: 10
+          default: 0
+        postEventSec:
+          type: integer
+          format: int32
+          example: 10
+          default: 0
+    scheduleSource:
+      type: string
+      description: "Following schedule sources supported:\n * `'off'` - scheduled\
+        \ off\n * `'type1'` - scheduled from type1\n * `'type2'` - scheduled from\
+        \ type2\n * `'type3'` - scheduled from type3\n  "
+      format: string
+      example: type1
+      default: "off"
+      enum:
+      - "off"
+      - type1
+      - type2
+      - type3
+    destinationEndPoint:
+      type: object
+      properties:
+        destinationList:
+          type: array
+          items:
+            $ref: '#/components/schemas/destinationEndPoint_destinationList'
+        extras:
+          type: array
+          example:
+          - key: vasjobid
+            value: "1553848496172609"
+          - key: message
+            value: Instusion Detection
+          - key: action
+            value: Take action at high priority
+          - key: priority
+            value: "1"
+          items:
+            $ref: '#/components/schemas/extra'
+      example:
+        destinationList:
+        - sourceId: 5c0d611b23aa7c0001a3b6ec
+          baseUrl: bucket
+          pass: admin
+          name: visage/
+          type: S3
+          user: admin
+        - sourceId: 5c0d611b23aa7c0001a3b6ec
+          baseUrl: bucket
+          pass: admin
+          name: visage/
+          type: S3
+          user: admin
+        extras:
+        - key: vasjobid
+          value: "1553848496172609"
+        - key: message
+          value: Instusion Detection
+        - key: action
+          value: Take action at high priority
+        - key: priority
+          value: "1"
+    destinationType:
+      type: string
+      description: "Capability id supported are as follows:\n * `'none'` - None\n\
+        \ * `'rtsp'` - RTSP Stream\n * `'http'` - HTTP Stream\n * `'file'` - Video\
+        \ file at Engine\n * `'ftp'` - File at FTP Server\n * `'vms'` - Stream from\
+        \ VMS\n * `'mqtt'` - MQ over mqtt protocol\n * `'amqp'` - MQ over amqp protocol\n\
+        \ * `'S3'` - Send to AWS S3 bucket\n * `'VS3'` - Send to Videonetics simple\
+        \ storage\n * `'BaseUrl'` - Use complete baseUrl\n * `'RelativeUrl'` - Use\
+        \ complete relativeUrl\n * `'ZeroMQ'` - ZeroMQ\n "
+      format: string
+      example: S3
+      enum:
+      - none
+      - rtsp
+      - http
+      - file
+      - ftp
+      - vms
+      - mqtt
+      - amqp
+      - S3
+      - VS3
+      - BaseUrl
+      - RelativeUrl
+      - ZeroMQ
+    color:
+      type: string
+      description: Attire of person predicted by the engine during attributeEvent
+        event
+      format: string
+      example: Black
+      default: Undetermined
+      enum:
+      - Black
+      - Blue
+      - Cyan
+      - Gray
+      - Green
+      - Purple
+      - Red
+      - Yellow
+      - Silver
+      - Gold
+      - White
+      - Undetermined
+      - Other
+    vehicleType:
+      type: string
+      description: "Also known as vehicleType: Vehicle classifications are as follows:\n\
+        \ * `'TwoWheeler'` - Two Wheeler vehicles i.e. Motor Cycle, Bike\n * `'ThreeWheeler'`\
+        \ - Three Wheeler vehicles i.e. Auto Rickshaw\n * `'FourWheeler'` - Four Wheeler\
+        \ vehicles i.e. Car, SUV\n * `'HeavyVehicle'` - Heavy Vehicles i.e. Bus, Truck\n\
+        \ * `'Car'` - Car\n * `'Motorbike'` - Motorbike\n * `'Mini-truck'` - Mini-truck\n\
+        \ * `'Van'` - Van\n * `'Car-Taxi'` - Car-Taxi\n * `'Bus'` - Bus\n * `'Tuk-tuk'`\
+        \ - Tuk-tuk\n  "
+      format: string
+      example: TwoWheeler
+      default: Undetermined
+      enum:
+      - TwoWheeler
+      - ThreeWheeler
+      - FourWheeler
+      - HeavyVehicle
+      - Car
+      - Motorbike
+      - Mini-truck
+      - Van
+      - Car-Taxi
+      - Bus
+      - Tuk-tuk
+      - Undetermined
+      - Other
+    capability:
+      type: integer
+      description: |-
+        Capability id supported are as follows:
+         * `201` - Intrusion Detection(Edge)
+         * `206` - Face Capture
+         * `207` - ANPR
+         * `210` - People Count
+         * `211` - Photo Recognition
+         * `221` - Crowd Formation/Crowd Detection
+         * `222` - Queue Formation Detection
+         * `244` - Vehicle Congestion
+         * `260` - Industrial No Helmet
+         * `261` - Industrial No Apron
+         * `315` - No Helmet
+         * `322` - No Seat Belt
+         * `324` - Person attribute
+         * `325` - People Details
+         * `329` - Driver on Call
+         * `330` - ATCCS
+         * `331` - People On Road
+         * `2201` - Intrusion Detection(Cloud)
+      format: int32
+      example: 211
+      enum:
+      - 201
+      - 206
+      - 207
+      - 210
+      - 211
+      - 221
+      - 222
+      - 260
+      - 261
+      - 322
+      - 324
+      - 325
+      - 329
+      - 330
+      - 315
+      - 331
+      - 2201
+    linksSelf:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/linksSelf_self'
+      readOnly: true
+      example:
+        self:
+          href: collection?maxResults=2&page=3
+          title: collection
+    links:
+      type: object
+      properties:
+        parent:
+          $ref: '#/components/schemas/linksSelf_self'
+        self:
+          $ref: '#/components/schemas/linksSelf_self'
+        next:
+          $ref: '#/components/schemas/linksSelf_self'
+        last:
+          $ref: '#/components/schemas/linksSelf_self'
+        prev:
+          $ref: '#/components/schemas/linksSelf_self'
+        collection:
+          $ref: '#/components/schemas/linksSelf_self'
+      readOnly: true
+      example:
+        next: null
+        parent:
+          href: collection?maxResults=2&page=3
+          title: collection
+        last: null
+        prev: null
+        self: null
+        collection: null
+    title:
+      type: string
+      format: string
+      readOnly: true
+      example: collection
+    href:
+      type: string
+      format: string
+      readOnly: true
+      example: collection?maxResults=2&page=3
+    defaultResponse:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: string
+          readOnly: true
+          example: 5c1956e925b6b30001103eb6
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+          example: 2019-01-17T11:25:04Z
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+          example: 2019-01-17T11:25:04Z
+        etag:
+          type: string
+          format: string
+          example: f7d6f2133d892ca3be7ee54d77c14bb15f75f72e
+        links:
+          $ref: '#/components/schemas/linksSelf'
+        status:
+          type: string
+          format: string
+          readOnly: true
+          example: OK
+      example:
+        created: 2019-01-17T11:25:04Z
+        etag: f7d6f2133d892ca3be7ee54d77c14bb15f75f72e
+        links:
+          self:
+            href: collection?maxResults=2&page=3
+            title: collection
+        _id: 5c1956e925b6b30001103eb6
+        updated: 2019-01-17T11:25:04Z
+        status: OK
+    anprEventsResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/anprEvent'
+        links:
+          $ref: '#/components/schemas/links'
+        meta:
+          $ref: '#/components/schemas/meta'
+      example:
+        meta:
+          total: 100
+          maxResults: 25
+          page: 1
+        links:
+          next: null
+          parent:
+            href: collection?maxResults=2&page=3
+            title: collection
+          last: null
+          prev: null
+          self: null
+          collection: null
+        items:
+        - ""
+        - ""
+    vaEventsResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/vaEvent'
+        links:
+          $ref: '#/components/schemas/links'
+        meta:
+          $ref: '#/components/schemas/meta'
+      example:
+        meta:
+          total: 100
+          maxResults: 25
+          page: 1
+        links:
+          next: null
+          parent:
+            href: collection?maxResults=2&page=3
+            title: collection
+          last: null
+          prev: null
+          self: null
+          collection: null
+        items:
+        - ""
+        - ""
+    attributeEventsResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/attributeEvent'
+        links:
+          $ref: '#/components/schemas/links'
+        meta:
+          $ref: '#/components/schemas/meta'
+      example:
+        meta:
+          total: 100
+          maxResults: 25
+          page: 1
+        links:
+          next: null
+          parent:
+            href: collection?maxResults=2&page=3
+            title: collection
+          last: null
+          prev: null
+          self: null
+          collection: null
+        items:
+        - ""
+        - ""
+    anprEvent:
+      allOf:
+      - $ref: '#/components/schemas/event'
+      - properties:
+          metaAnprEvent:
+            $ref: '#/components/schemas/metaAnprEvent'
+    vaEvent:
+      allOf:
+      - $ref: '#/components/schemas/event'
+      - properties:
+          metaVaEvent:
+            $ref: '#/components/schemas/metaVaEvent'
+    attributeEvent:
+      allOf:
+      - $ref: '#/components/schemas/event'
+      - properties:
+          metaAttributeEvent:
+            $ref: '#/components/schemas/metaAttributeEvent'
+    eventType:
+      type: string
+      description: |-
+        Event types can be following:
+         * `'faceEvent'` - Events triggered from VISAGE
+         * `'attributeEvent'` - Events triggered from Taalash Engine
+         * `'anprEvent'` - anprEvent
+         * `'noSeatBeltEvent'` - No SeatBelt Event
+         * `'driverOnCallEvent'` - driver On Call Event
+         * `'peopleCollapsingEvent'` - peopleCollapsingEvent
+         * `'crowdFormationEvent'` - crowdFormationEvent
+         * `'crowdDispersionEvent'` - crowdDispersionEvent
+         * `'crowdAbnormalityEvent'` - crowdAbnormalityEvent
+         * `'atccsEvent'` - Automatic Traffic Count and Classification Sytem Event
+         * `'noHelmetEvent'` - No Helmet Event
+         * `'peopleOnRoadEvent'` - People On Road Event
+         * `'industrialNoHelmetEvent'` - Industrial No Helmet Event
+         * `'industrialNoApronEvent'` - Industrial No Apron Event
+         * `'intrusionDetectionEdgeEvent'` - Intrusion Detection event in edge
+      format: string
+      example: eventType
+      enum:
+      - faceEvent
+      - attributeEvent
+      - anprEvent
+      - noSeatBeltEvent
+      - driverOnCallEvent
+      - peopleCollapsingEvent
+      - crowdFormationEvent
+      - crowdDispersionEvent
+      - crowdAbnormalityEvent
+      - atccsEvent
+      - noHelmetEvent
+      - peopleOnRoadEvent
+      - vehicleCongestionEvent
+      - intrusionDetectionEdgeEvent
+      - industrialNoHelmetEvent
+      - industrialNoApronEvent
+      - vaEvent
+    vtplVideoFrame:
+      type: object
+      properties:
+        channelId:
+          type: integer
+          format: int16
+        appId:
+          type: integer
+          format: int16
+        frameId:
+          type: integer
+          format: int64
+        timeStamp:
+          type: integer
+          format: int64
+          example: 1546041600000
+        fps:
+          type: number
+          format: float
+          example: 25
+        frame:
+          type: object
+        isFirstFrame:
+          type: boolean
+          example: false
+          default: false
+        isEndOfStream:
+          type: boolean
+          example: false
+          default: false
+        type:
+          $ref: '#/components/schemas/sourceType'
+        baseUrl:
+          type: string
+          format: string
+          example: 192.168.1.62
+        user:
+          type: string
+          format: string
+          example: admin
+        pass:
+          type: string
+          format: string
+          example: admin
+    objectInfo:
+      type: object
+      properties:
+        objectDirectProperties:
+          $ref: '#/components/schemas/objectDirectProperties'
+        objectIndirectProperties:
+          $ref: '#/components/schemas/objectIndirectProperties'
+        objectType:
+          type: string
+          format: string
+        objectRect:
+          $ref: '#/components/schemas/objectRect'
+        confidence:
+          type: number
+          format: float
+          default: 0
+        isValid:
+          type: boolean
+          example: false
+          default: false
+    objectRect:
+      type: object
+      properties:
+        x:
+          type: integer
+          format: uint32
+          default: 0
+        y:
+          type: integer
+          format: uint32
+          default: 0
+        width:
+          type: integer
+          format: uint32
+          default: 0
+        height:
+          type: integer
+          format: uint32
+          default: 0
+    objectDimension:
+      type: object
+      properties:
+        height:
+          type: number
+          format: float
+          default: 0
+        width:
+          type: number
+          format: float
+          default: 0
+        length:
+          type: number
+          format: float
+          default: 0
+    objectIndirectProperties:
+      type: object
+      properties:
+        channelId:
+          type: integer
+          format: int16
+        appId:
+          type: integer
+          format: int16
+        frameId:
+          type: integer
+          format: int64
+        timeStamp:
+          type: integer
+          format: int64
+          example: 1546041600000
+        zoneId:
+          type: integer
+          format: int16
+          default: -1
+        objectId:
+          type: integer
+          format: int16
+          default: -1
+        trackId:
+          type: integer
+          format: int64
+          default: -1
+        lineId:
+          type: integer
+          format: int16
+          default: -1
+        pointId:
+          type: integer
+          format: int16
+          default: -1
+    objectDirectProperties:
+      type: object
+      properties:
+        color:
+          type: string
+          format: string
+        speed:
+          type: number
+          format: float
+          default: 0
+        objectDimension:
+          $ref: '#/components/schemas/objectDimension'
+    humanProperties:
+      type: object
+      properties:
+        gender:
+          type: string
+          format: string
+        topAttireColor:
+          type: string
+          format: string
+        bottomAttireColor:
+          type: string
+          format: string
+        topType:
+          type: string
+          format: string
+        bottomType:
+          type: string
+          format: string
+        isLongSleeve:
+          type: string
+          format: string
+        isHeaddressPresent:
+          type: string
+          format: string
+        isBagPresent:
+          type: string
+          format: string
+    vehicleProperties:
+      type: object
+      properties:
+        color:
+          type: string
+          format: string
+    animalProperties:
+      type: object
+      properties:
+        color:
+          type: string
+          format: string
+    trackProperties:
+      type: object
+      properties:
+        trackId:
+          type: integer
+          format: int64
+          default: -1
+        trackLength:
+          type: integer
+          format: int32
+          default: -1
+    engineTask_zoneSetting:
+      type: object
+      properties:
+        referenceWidth:
+          type: integer
+          description: Reference width on which zones are relevent
+          format: int32
+          example: 640
+        referenceHeight:
+          type: integer
+          description: Reference height on which zones are relevent
+          format: int32
+          example: 480
+        zones:
+          type: array
+          items:
+            $ref: '#/components/schemas/zone'
+      example:
+        referenceWidth: 640
+        referenceHeight: 480
+        zones:
+        - vertices:
+          - x: 10
+            y: 10
+          - x: 10
+            y: 10
+          numberOfVertices: 4
+          zoneId: 1
+          zoneType: interest
+          lineSetting:
+            vertices:
+            - null
+            - null
+            lineType: entry
+            id: 1
+            config:
+            - key: observationDurationInSec
+              value: "40"
+            - key: gapBetweenEventsInSec
+              value: "120"
+          config:
+          - key: minNoOfPeopleInCrowd
+            value: "8"
+          - key: observationDurationInSec
+            value: "40"
+          - key: gapBetweenEventsInSec
+            value: "120"
+        - vertices:
+          - x: 10
+            y: 10
+          - x: 10
+            y: 10
+          numberOfVertices: 4
+          zoneId: 1
+          zoneType: interest
+          lineSetting:
+            vertices:
+            - null
+            - null
+            lineType: entry
+            id: 1
+            config:
+            - key: observationDurationInSec
+              value: "40"
+            - key: gapBetweenEventsInSec
+              value: "120"
+          config:
+          - key: minNoOfPeopleInCrowd
+            value: "8"
+          - key: observationDurationInSec
+            value: "40"
+          - key: gapBetweenEventsInSec
+            value: "120"
+    engineTask_lineSetting:
+      type: object
+      properties:
+        referenceWidth:
+          type: integer
+          description: Reference width on which zones are relevent
+          format: int32
+          example: 640
+        referenceHeight:
+          type: integer
+          description: Reference height on which zones are relevent
+          format: int32
+          example: 480
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/line'
+      example:
+        referenceWidth: 640
+        referenceHeight: 480
+        lines:
+        - null
+        - null
+    sourceEndPoint_sourceList:
+      type: object
+      properties:
+        sourceId:
+          type: string
+          format: string
+          example: 5c0d611b23aa7c0001a3b6ec
+        type:
+          $ref: '#/components/schemas/sourceType'
+        baseUrl:
+          type: string
+          format: string
+          example: 192.168.1.62
+        user:
+          type: string
+          format: string
+          example: admin
+        pass:
+          type: string
+          format: string
+          example: admin
+      example:
+        sourceId: 5c0d611b23aa7c0001a3b6ec
+        baseUrl: 192.168.1.62
+        pass: admin
+        type: rtsp
+        user: admin
+    destinationEndPoint_destinationList:
+      type: object
+      properties:
+        sourceId:
+          type: string
+          format: string
+          example: 5c0d611b23aa7c0001a3b6ec
+        type:
+          $ref: '#/components/schemas/destinationType'
+        baseUrl:
+          type: string
+          format: string
+          example: bucket
+        name:
+          type: string
+          format: string
+          example: visage/
+        user:
+          type: string
+          format: string
+          example: admin
+        pass:
+          type: string
+          format: string
+          example: admin
+      example:
+        sourceId: 5c0d611b23aa7c0001a3b6ec
+        baseUrl: bucket
+        pass: admin
+        name: visage/
+        type: S3
+        user: admin
+    linksSelf_self:
+      type: object
+      properties:
+        title:
+          $ref: '#/components/schemas/title'
+        href:
+          $ref: '#/components/schemas/href'
+      example:
+        href: collection?maxResults=2&page=3
+        title: collection
+

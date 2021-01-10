@@ -5,7 +5,7 @@
 		"context": "..",
 		"args": { 
 			// Update 'VARIANT' to pick a Python version: 3, 3.6, 3.7, 3.8, 3.9
-			"VARIANT": "3.8",
+			"VARIANT": "3.9",
 			// Options
 			"INSTALL_NODE": "false",
 			"NODE_VERSION": "lts/*"
@@ -31,12 +31,12 @@
 
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
-		"ms-python.python"
+		"ms-python.vscode-pylance"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	"forwardPorts": [
-		8000
+		9000
 	],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
